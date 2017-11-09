@@ -42,8 +42,12 @@ public class Filter extends DefaultHandler
 		if (w.justcreated)
 		{
 //			System.err.println(uri+"\n"+localName);
-			out.print(" xmlns:");
-			out.print(w.entry.prefix);
+			out.print(" xmlns");
+			if (w.entry.prefix!=null && !w.entry.prefix.isEmpty())
+			{
+				out.print(":");
+				out.print(w.entry.prefix);
+			}
 			out.print("='");
 			out.print(xmlEscape(w.entry.uri));
 			out.print("'");
