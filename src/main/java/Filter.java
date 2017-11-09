@@ -1,5 +1,6 @@
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -14,8 +15,14 @@ public class Filter extends DefaultHandler
 	public Filter(OutputStream out)
 	{
 		if (out==null) throw new NullPointerException();
-		if (out instanceof PrintStream) this.out=(PrintStream) out;
-		this.out=new PrintStream(out);
+		try
+		{
+			this.out=new PrintStream(out,false,"UTF-8");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	NamespaceStack ns=new NamespaceStack();
@@ -100,5 +107,11 @@ public class Filter extends DefaultHandler
 		String res = String.valueOf(ch,start,length);
 		res=xmlRedact(res);
 		out.print(res);			
+	}
+	
+	@Override
+	public void startDocument() throws SAXException
+	{
+		out.println("<?xml version='1.0' encoding='UTF-8'?>");
 	}
 }
